@@ -516,13 +516,13 @@ function showResult(app){
     winner=tied.find(p=>sig[p.id]===topSig)||tied[0];
   }
 
-  const top3=P.filter(p=>scores[p.id]>0).sort((a,b)=>scores[b.id]-scores[a.id]).slice(0,3);
+  const top3=P.filter(p=>scores[p.id]>0&&p.id!==winner.id).sort((a,b)=>scores[b.id]-scores[a.id]).slice(0,3);
   const top3html=top3.map((p,i)=>{
     const img=getImg(p.id);
     const desc=descs[p.id]||'';
     const cardId='top3-desc-'+p.id;
     return`<div class="top3-card" style="background:${p.bg};border-color:${p.border}">
-      ${i===0?'<div class="top3-rank" style="color:'+p.tx+'">你</div>':'<div class="top3-rank" style="color:'+p.tx+'">#'+(i+1)+'</div>'}
+      <div class="top3-rank" style="color:${p.tx}">#${i+2}</div>
       ${img?`<img src="${img}" alt="${p.n}" class="top3-img" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><span class="top3-fallback" style="display:none">${p.s}</span>`:`<span class="top3-fallback">${p.s}</span>`}
       <div class="top3-name" style="color:${p.tx}">${p.n}</div>
       <button class="top3-toggle" onclick="toggleDesc('${cardId}',this)" style="color:${p.tx};border-color:${p.tx}20">了解更多 ↓</button>
@@ -543,7 +543,7 @@ function showResult(app){
         <div class="type-badge" style="background:${winner.bg};border:.5px solid ${winner.border};color:${winner.tx}">${winner.tn}屬性</div>
         <p class="result-desc">${descs[winner.id]}</p>
         <div class="divider"></div>
-        <div class="scores-label">最接近的前三名</div>
+        <div class="scores-label">你也很像這幾隻</div>
         <div class="scores-row">${top3html}</div>
         <div class="result-btns">
           <button class="retry-btn" onclick="initQuiz()">重新測驗</button>
