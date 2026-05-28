@@ -153,7 +153,13 @@
     text-align:left;padding:0 4px}
   .divider{height:.5px;background:var(--border);margin-bottom:1.25rem}
   .scores-label{font-size:11px;color:var(--text-dim);letter-spacing:.06em;margin-bottom:10px;text-align:left}
-  .scores-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:1.5rem;justify-content:flex-start}
+  .scores-row{display:flex;gap:10px;margin-bottom:1.5rem;justify-content:center}
+  .top3-card{flex:1;max-width:120px;display:flex;flex-direction:column;align-items:center;gap:4px;
+    border:.5px solid transparent;border-radius:14px;padding:12px 8px 10px;position:relative}
+  .top3-rank{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;opacity:.8}
+  .top3-img{width:64px;height:64px;object-fit:contain;filter:drop-shadow(0 2px 8px rgba(139,111,255,0.3))}
+  .top3-fallback{font-size:40px;line-height:64px;height:64px}
+  .top3-name{font-size:11px;font-weight:600;text-align:center;line-height:1.3}
   .score-pill{font-size:11px;padding:4px 10px;border-radius:20px;font-weight:500;border:.5px solid transparent}
   .result-btns{display:flex;gap:8px}
   .retry-btn{flex:1;background:var(--surface2);border:.5px solid var(--border-hover);border-radius:10px;
@@ -494,7 +500,14 @@ function showResult(app){
   }
 
   const top3=P.filter(p=>scores[p.id]>0).sort((a,b)=>scores[b.id]-scores[a.id]).slice(0,3);
-  const top3html=top3.map(p=>`<span class="score-pill" style="background:${p.bg};border-color:${p.border};color:${p.tx}">${p.s} ${p.n}</span>`).join('');
+  const top3html=top3.map((p,i)=>{
+    const img=getImg(p.id);
+    return`<div class="top3-card" style="background:${p.bg};border-color:${p.border}">
+      ${i===0?'<div class="top3-rank" style="color:'+p.tx+'">你</div>':'<div class="top3-rank" style="color:'+p.tx+'">#'+(i+1)+'</div>'}
+      ${img?`<img src="${img}" alt="${p.n}" class="top3-img" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><span class="top3-fallback" style="display:none">${p.s}</span>`:`<span class="top3-fallback">${p.s}</span>`}
+      <div class="top3-name" style="color:${p.tx}">${p.n}</div>
+    </div>`;
+  }).join('');
   const imgUrl=getImg(winner.id);
   const imgHtml=imgUrl
     ?`<div class="result-img-wrap"><img class="result-img" src="${imgUrl}" alt="${winner.n}" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><span class="result-img-fallback" style="display:none">${winner.s}</span></div>`
